@@ -162,7 +162,7 @@ class Posts {
 				if($status =='inherit') {
 					return true;
 				}
-				
+
 				$status_obj = get_post_status_object( $status );
 				if ( !$status_obj ) {
 					return false;
@@ -329,6 +329,8 @@ class Posts {
 			$userModel = Users::model();
 			$author = $userModel->findById( $post->post_author );
 
+            $geodata = self::_get_geo_shit( $post );
+
 			Users::format( $author, 'read' );
 
 			$data = array_merge( $data, array(
@@ -344,7 +346,9 @@ class Posts {
 				'meta' => ( object ) $meta,
 				'taxonomies' => ( object ) $post_taxonomies,
 				'media' => array_values( $media ),
-				'author' => $author
+				'author' => $author,
+                /* 'geodata' => get_post_custom_keys($post->ID), */
+                'geodata' => $geodata
 				) );
 		}
 
@@ -354,6 +358,18 @@ class Posts {
 
 		$post = ( object ) $data;
 	}
+
+    protected static function _get_geo_shit( \WP_Post $post ) {
+        $geo_array = array(
+            'enabled' => (boolean) get_post_meta( $post->ID, 'geo_enabled', true ),
+            'address' => get_post_meta( $post->ID, 'geo_address', true ),
+            'public' => (boolean) get_post_meta( $post->ID, 'geo_public', true ),
+            'latitude' => (float) get_post_meta( $post->ID, 'geo_latitude', true ),
+            'longitude' => (float) get_post_meta( $post->ID, 'geo_longitude', true )
+        );
+
+        return $geo_array;
+    }
 
 	protected static function _get_post_galleries( \WP_Post $post ) {
 		global $shortcode_tags;

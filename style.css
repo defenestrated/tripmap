@@ -1,1 +1,27 @@
 /* add local spec styles here */
+
+body {
+    margin: 0 !important;
+    width: 100%;
+    height: 100%;
+}
+
+.parchment {
+    width: 100%;
+    height: 100%;
+    background: darkblue;
+}
+
+.subunit {
+    fill: darkblue;
+    stroke: white;
+    stroke-width: 1px;
+}
+
+.subunit:hover {
+    fill: white;
+}
+
+.dot {
+    fill: red;
+}
