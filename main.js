@@ -29,7 +29,11 @@ function pullposts(mapdata) {
     $.ajax({
         url: "wordpress/wp_api/v1/posts",
         success: function(postdata) {
-            booty(postdata, mapdata);
+            var onlyposts = _(postdata.posts).filter(function(ell, ix) {
+                // console.log(ell.name + ": " + ell.type);
+                return ell.type === "post";
+            });
+            booty(onlyposts, mapdata);
         }
     });
 }
@@ -80,10 +84,10 @@ function booty(thang, junk) {
 
     var linepoints = [];
 
-    _(thang.posts).each(function(ell, ix) {
+    _(thang).each(function(ell, ix) {
         // console.log(ell);
         var datapoints = dots.selectAll("g")
-                .data(thang.posts)
+                .data(thang)
                 .enter().append("g")
                 .attr("class", function(d) { return "datapoint " + d.name; })
         ;
