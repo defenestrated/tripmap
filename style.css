@@ -107,7 +107,7 @@ a:active {
     padding: 1em 0;
     text-align: center;
     border-top: 1px solid white;
-    background: rgba(0,0,127,0.g8);
+    background: rgba(0,0,127,0.8);
 }
 
 .instructions p {
@@ -156,13 +156,23 @@ text.label {
     font-weight: normal;
     font-size: 11px;
     text-transform: uppercase;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.2em;
     fill: white;
     text-shadow: 0 0 20px rgba(0,0,127,1),
                  0 0 20px rgba(0,0,127,1),
                  0 0 20px rgba(0,0,127,1),
                  0 0 10px rgb(0,0,127),
                  0 0 5px rgb(0,0,127);
+    /* -moz-text-shadow: 0 0 20px rgba(0,0,127,1), */
+    /*              0 0 20px rgba(0,0,127,1), */
+    /*              0 0 20px rgba(0,0,127,1), */
+    /*              0 0 10px rgb(0,0,127), */
+    /*              0 0 5px rgb(0,0,127); */
+    /* -webkit-text-shadow: 0 0 20px rgba(0,0,127,1), */
+    /*              0 0 20px rgba(0,0,127,1), */
+    /*              0 0 20px rgba(0,0,127,1), */
+    /*              0 0 10px rgb(0,0,127), */
+    /*              0 0 5px rgb(0,0,127); */
     visibility: hidden;
 }
 
