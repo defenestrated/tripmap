@@ -80,6 +80,7 @@ a:active {
     height: 100%;
     background: darkblue;
     display: table;
+    z-index: 100;
 }
 
 .loading p {
@@ -98,6 +99,23 @@ a:active {
     height: 100%;
 }
 
+.instructions {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 1em 0;
+    text-align: center;
+    border-top: 1px solid white;
+    background: rgba(0,0,127,0.g8);
+}
+
+.instructions p {
+    font: 300 normal 14px "HelveNeue";
+    letter-spacing: 0.14em;
+    color: white;
+}
+
 .parchment {
     width: 100%;
     height: 100%;
@@ -106,8 +124,8 @@ a:active {
 
 .pieceoland {
     fill: rgba(0,0,127,1);
-    stroke: white;
-    stroke-width: 0.5px;
+    stroke: rgba(255,255,255,0.4);
+    stroke-width: 1px;
     /* stroke-dasharray: 2, 4; */
 }
 
