@@ -2,61 +2,50 @@
 
 var parchment, ww, wh, projection;
 
+var postdata, mapdata;
+
+var postsloaded = false, maploaded = false, domloaded = false;
+
+function totesloaded() {
+    // if (domloaded) $(".loading .status").append(" page ");
+    // if (maploaded) $(".loading .status").append(" map ");
+    // if (postsloaded) $(".loading .status").append(" posts ");
+
+    console.log("posts: " + postsloaded + " // " + "map: " + maploaded + " // " + "dom: " + domloaded);
+    if (postsloaded === true && maploaded === true && domloaded === true) {
+
+        return true;
+    }
+    else return false;
+}
+
+pullposts();
+loadjson();
+
 $(document).ready(function() {
-
-    ww = $(window).width(), wh = $(window).height();
-
-    sizefix();
-
-    parchment = d3.select(".parchment");
-
-    loadjson();
-
-    registerEvents();
+    domloaded = true;
+    if (totesloaded()) {
+        render();
+    }
 });
 
-
-function sizefix() {
+function killload() {
+    $(".loading").html("<p>Ok, done!</p>").fadeOut(800, "easeInQuad");
 }
 
-function registerEvents() {
-    $("#closepost").on("click", function() {
-        $(".postviewer").fadeOut(800, "easeOutCubic");
-    });
-}
+function render() {
+    console.log("done loading");
 
-function pullposts(mapdata) {
-    $.ajax({
-        url: "wordpress/wp_api/v1/posts",
-        success: function(postdata) {
-            var onlyposts = _(postdata.posts).filter(function(ell, ix) {
-                // console.log(ell.name + ": " + ell.type);
-                return ell.type === "post";
-            });
-            booty(onlyposts, mapdata);
-        }
-    });
-}
+    ww = $(window).width(), wh = $(window).height();
+    parchment = d3.select(".parchment");
 
-
-function loadjson() {
-    d3.json("assets/usa.json", function(error, usa) {
-        if (error) return console.error(error);
-        console.log(usa);
-
-        boob(usa);
-    });
-}
-
-function boob(nipple) {
-
-    var subunits = topojson.feature(nipple, nipple.objects.subunits);
+    var subunits = topojson.feature(mapdata, mapdata.objects.subunits);
     projection = d3.geo.albers()
         .scale(1200)
         .translate([ww/2, wh/2])
     ;
 
-    var path = d3.geo.path()
+    var mappath = d3.geo.path()
             .projection(projection);
 
     mapstuff = parchment.append("g").attr("class", "map-data");
@@ -66,19 +55,52 @@ function boob(nipple) {
     //     .attr("d", path);
 
     mapstuff.selectAll(".pieceoland")
-        .data(topojson.feature(nipple, nipple.objects.subunits).features)
+        .data(topojson.feature(mapdata, mapdata.objects.subunits).features)
         .enter().append("path")
         .attr("class", function(d) { return "pieceoland " + d.id; })
-        .attr("d", path)
+        .attr("d", mappath)
     ;
 
-    pullposts(nipple);
+    booty(postdata, mapdata);
 
+    registerEvents();
 }
+function registerEvents() {
+    $("#closepost").on("click", function() {
+        $(".postviewer").fadeOut(800, "easeOutCubic");
+    });
+}
+function pullposts() {
+    console.log("pulling posts");
+    $.ajax({
+        url: "wordpress/wp_api/v1/posts",
+        success: function(wpvomit) {
+            console.log("success");
+            var onlyposts = _(wpvomit.posts).filter(function(ell, ix) {
+                // console.log(ell.name + ": " + ell.type);
+                return ell.type === "post";
+            });
 
-
+            postdata = onlyposts;
+            postsloaded = true;
+            if (totesloaded()) render();
+        }
+    });
+}
+function loadjson() {
+    d3.json("assets/usa.json", function(error, usa) {
+        if (error) return console.error(error);
+        console.log(usa);
+        mapdata = usa;
+        maploaded = true;
+        if (totesloaded()) render();
+    });
+}
 function booty(thang, junk) {
+    console.log("shakin booty:");
     console.log(thang);
+
+    killload();
 
     var dots = parchment.append("g").attr("class", "goodies");
 
@@ -93,24 +115,51 @@ function booty(thang, junk) {
         ;
 
         datapoints.each(function(d, i) {
-            d3.select(this).append("circle")
-                .attr("class", "dot")
-                .attr("r", "5px")
-                .attr("transform", function(d) {
-                    linepoints.push(projection([d.geodata.longitude, d.geodata.latitude]));
-                    return "translate(" + projection([d.geodata.longitude, d.geodata.latitude]) + ")";
+            var mapdot = d3.select(this).append("circle")
+                    .attr("class", "dot")
+                    .attr("r", "5px")
+                    .attr("transform", function(d) {
+                        linepoints.unshift(projection([d.geodata.longitude, d.geodata.latitude]));
+                        return "translate(" + projection([d.geodata.longitude, d.geodata.latitude]) + ")";
+                    });
+
+            mapdot.transition()
+                .duration(500)
+                .delay(function(d) {
+                    var eldelay = 250*(thang.length-i-1);
+                    console.log(eldelay);
+                    return eldelay;
                 })
-                .on("mouseenter", function(d) {
-                    d3.select(this).transition()
-                        .duration(200)
-                    // .attr("r", "20px")
-                        .style("fill", "white")
-                    ;
-                    $(".datapoint:not(." + d.name + "), .weenie").animate({
-                        opacity: 0.3
-                    }, 200);
-                    $(".label." + d.name).fadeIn(200);
-                })
+                .style("opacity", 1)
+
+            mapdot.on("mouseenter", function(d) {
+                d3.select(this).transition()
+                    .duration(200)
+                // .attr("r", "20px")
+                    .style("fill", "white")
+                ;
+                $(".datapoint:not(." + d.name + "), .weenie").animate({
+                    opacity: 0.3
+                }, 200);
+                // if ($(".label." + d.name + " .labelbox").length === 0) {
+
+                //     var bbox = d3.select("text." + d.name).node().getBBox();
+                //     console.log(bbox);
+
+                //     dp.insert("rect", ":first-child")
+                //         .attr("class", function(d) { return "label labelbox " + d.name; })
+                //         .attr("x", bbox.x-10)
+                //         .attr("y", bbox.y-5)
+                //         .attr("width", bbox.width+20)
+                //         .attr("height", bbox.height+10)
+                //     ;
+                // }
+
+                $(".label." + d.name).css({
+                    "display": "none",
+                    "visibility": "visible"
+                }).fadeIn(200);
+            })
                 .on("mouseleave", function(d) {
                     d3.select(this).transition()
                         .duration(200)
@@ -140,16 +189,20 @@ function booty(thang, junk) {
                 })
             ;
 
-            d3.select(this).append("text")
-                .attr("class", function(d) { return "label " + d.name; })
-                .attr("x", function(d) {
-                    return projection([d.geodata.longitude, d.geodata.latitude])[0] + 20 + "px";
-                })
-                .attr("y", function(d) {
-                    return projection([d.geodata.longitude, d.geodata.latitude])[1] + "px";
-                })
-                .attr("dy", "0.35em")
-                .text(function(d) { return d.title; })
+
+            var dp =  d3.select(this);
+
+            var ltext = dp.append("text")
+                    .attr("class", function(d) { return "label " + d.name; })
+                    .attr("x", function(d) {
+                        return projection([d.geodata.longitude, d.geodata.latitude])[0] + 20 + "px";
+                    })
+                    .attr("y", function(d) {
+                        return projection([d.geodata.longitude, d.geodata.latitude])[1] + "px";
+                    })
+                    .attr("dy", "0.35em")
+                    .text(function(d) { return d.title; })
+            ;
         });
 
 
@@ -170,7 +223,21 @@ function booty(thang, junk) {
     ;
 
 
-    d3.select(".goodies").insert("path", ".datapoint")
-        .attr("class", "weenie")
-        .attr("d", line(linepoints));
+    var linepath = d3.select(".goodies").insert("path", ".datapoint")
+            .attr("class", "weenie")
+            .attr("d", line(linepoints))
+    ;
+
+    var linelength = linepath.node().getTotalLength();
+    console.log("line length: " + linelength);
+
+    linepath
+        .attr("stroke-dasharray", linelength + " " + linelength)
+        .attr("stroke-dashoffset", linelength)
+        .transition()
+        .duration($(".datapoint").length*250)
+        .ease("linear")
+        .attr("stroke-dashoffset", 0);
+
+
 }
