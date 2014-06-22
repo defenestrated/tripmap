@@ -1,5 +1,8 @@
 // add any scripting here
 
+var debug = false;
+// uncomment this to enable console logging.
+
 var parchment, ww, wh, projection;
 
 var postdata, mapdata;
@@ -11,7 +14,7 @@ function totesloaded() {
     // if (maploaded) $(".loading .status").append(" map ");
     // if (postsloaded) $(".loading .status").append(" posts ");
 
-    console.log("posts: " + postsloaded + " // " + "map: " + maploaded + " // " + "dom: " + domloaded);
+    if (debug) console.log("posts: " + postsloaded + " // " + "map: " + maploaded + " // " + "dom: " + domloaded);
     if (postsloaded === true && maploaded === true && domloaded === true) {
 
         return true;
@@ -34,7 +37,7 @@ function killload() {
 }
 
 function render() {
-    console.log("done loading");
+    if (debug) console.log("done loading");
 
     ww = $(window).width(), wh = $(window).height();
 
@@ -74,13 +77,13 @@ function registerEvents() {
     });
 }
 function pullposts() {
-    console.log("pulling posts");
+    if (debug) console.log("pulling posts");
     $.ajax({
         url: "wordpress/wp_api/v1/posts",
         success: function(wpvomit) {
-            console.log("success");
+            if (debug) console.log("success");
             var onlyposts = _(wpvomit.posts).filter(function(ell, ix) {
-                // console.log(ell.name + ": " + ell.type);
+                // if (debug) console.log(ell.name + ": " + ell.type);
                 return ell.type === "post";
             });
 
@@ -93,15 +96,15 @@ function pullposts() {
 function loadjson() {
     d3.json("assets/usa.json", function(error, usa) {
         if (error) return console.error(error);
-        console.log(usa);
+        if (debug) console.log(usa);
         mapdata = usa;
         maploaded = true;
         if (totesloaded()) render();
     });
 }
 function booty(thang, junk) {
-    console.log("shakin booty:");
-    console.log(thang);
+    if (debug) console.log("shakin booty:");
+    if (debug) console.log(thang);
 
     killload();
 
@@ -110,7 +113,7 @@ function booty(thang, junk) {
     var linepoints = [];
 
     _(thang).each(function(ell, ix) {
-        // console.log(ell);
+        // if (debug) console.log(ell);
         var datapoints = dots.selectAll("g")
                 .data(thang)
                 .enter().append("g")
@@ -130,7 +133,7 @@ function booty(thang, junk) {
                 .duration(500)
                 .delay(function(d) {
                     var eldelay = 250*(thang.length-i-1);
-                    console.log(eldelay);
+                    if (debug) console.log(eldelay);
                     return eldelay;
                 })
                 .style("opacity", 1)
@@ -147,7 +150,7 @@ function booty(thang, junk) {
                 // if ($(".label." + d.name + " .labelbox").length === 0) {
 
                 //     var bbox = d3.select("text." + d.name).node().getBBox();
-                //     console.log(bbox);
+                //     if (debug) console.log(bbox);
 
                 //     dp.insert("rect", ":first-child")
                 //         .attr("class", function(d) { return "label labelbox " + d.name; })
@@ -211,15 +214,15 @@ function booty(thang, junk) {
 
     });
 
-    // console.log(linepoints);
+    // if (debug) console.log(linepoints);
 
     var line = d3.svg.line()
             .x(function(d, i) {
-                // console.log("data point #" + i + ", x: " + d[0]);
+                // if (debug) console.log("data point #" + i + ", x: " + d[0]);
                 return d[0];
             })
             .y(function(d, i) {
-                // console.log("data point #" + i + ", y: " + d[1]);
+                // if (debug) console.log("data point #" + i + ", y: " + d[1]);
                 return d[1];
             })
             .interpolate("linear")
@@ -232,7 +235,7 @@ function booty(thang, junk) {
     ;
 
     var linelength = linepath.node().getTotalLength();
-    console.log("line length: " + linelength);
+    if (debug) console.log("line length: " + linelength);
 
     linepath
         .attr("stroke-dasharray", linelength + " " + linelength)
