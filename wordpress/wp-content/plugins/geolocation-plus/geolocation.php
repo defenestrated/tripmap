@@ -512,11 +512,11 @@ function display_location($content)  {
 function reverse_geocode($latitude, $longitude) {
 	$url = "http://maps.google.com/maps/api/geocode/json?latlng=".$latitude.",".$longitude."&sensor=false";
 	$result = wp_remote_get($url, array('timeout' => 200));
-    error_log("---------------");
-    error_log("the result is:");
+    /* error_log("---------------"); */
+    /* error_log("the result is:"); */
     $iserr = is_wp_error($result);
     /* error_log(var_export($result, true)); */
-    error_log($iserr);
+    /* error_log($iserr); */
 
     if ($iserr != 1) {
             $json = json_decode($result['body']);
