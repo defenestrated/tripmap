@@ -1,7 +1,7 @@
 <?php
 
 /*
-  Plugin Name: Thermal API
+  Plugin Name: Thermal API (sam's modifications)
   Version:     0.12.0
   Plugin URI:  http://thermal-api.com/
   Description: The power of WP_Query in a RESTful API.

@@ -99,6 +99,15 @@ a:active {
     height: 100%;
 }
 
+.copyright {
+    position: fixed;
+    bottom: 6em;
+    right: 1em;
+    font: 400 normal 9px "HelveNeue";
+    letter-spacing: 0.2em;
+    color: white;
+}
+
 .instructions {
     position: fixed;
     bottom: 0;

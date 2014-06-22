@@ -37,6 +37,9 @@ function render() {
     console.log("done loading");
 
     ww = $(window).width(), wh = $(window).height();
+
+    $(".copyright").css("bottom", $(".instructions").outerHeight() + 4 + "px");
+
     parchment = d3.select(".parchment");
 
     var subunits = topojson.feature(mapdata, mapdata.objects.subunits);
