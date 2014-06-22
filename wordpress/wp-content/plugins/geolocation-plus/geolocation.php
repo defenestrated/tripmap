@@ -514,35 +514,35 @@ function reverse_geocode($latitude, $longitude) {
 	$result = wp_remote_get($url, array('timeout' => 200));
     /* error_log("---------------"); */
     /* error_log("the result is:"); */
-    $iserr = is_wp_error($result);
+    /* $iserr = is_wp_error($result); */
     /* error_log(var_export($result, true)); */
     /* error_log($iserr); */
 
-    if ($iserr != 1) {
-        $json = json_decode($result['body']);
-        foreach ($json->results as $result)
-            {
-                foreach($result->address_components as $addressPart) {
-                    if((in_array('locality', $addressPart->types)) && (in_array('political', $addressPart->types)))
-                        $city = $addressPart->long_name;
-                    else if((in_array('administrative_area_level_1', $addressPart->types)) && (in_array('political', $addressPart->types)))
-                        $state = $addressPart->long_name;
-                    else if((in_array('country', $addressPart->types)) && (in_array('political', $addressPart->types)))
-                        $country = $addressPart->long_name;
-                }
+    /* if ($iserr != 1) { */
+    $json = json_decode($result['body']);
+    foreach ($json->results as $result)
+        {
+            foreach($result->address_components as $addressPart) {
+                if((in_array('locality', $addressPart->types)) && (in_array('political', $addressPart->types)))
+                    $city = $addressPart->long_name;
+                else if((in_array('administrative_area_level_1', $addressPart->types)) && (in_array('political', $addressPart->types)))
+                    $state = $addressPart->long_name;
+                else if((in_array('country', $addressPart->types)) && (in_array('political', $addressPart->types)))
+                    $country = $addressPart->long_name;
             }
+        }
 
-        if(($city != '') && ($state != '') && ($country != ''))
-            $address = $city.', '.$state.', '.$country;
-        else if(($city != '') && ($state != ''))
-            $address = $city.', '.$state;
-        else if(($state != '') && ($country != ''))
-            $address = $state.', '.$country;
-        else if($country != '')
-            $address = $country;
+    if(($city != '') && ($state != '') && ($country != ''))
+        $address = $city.', '.$state.', '.$country;
+    else if(($city != '') && ($state != ''))
+        $address = $city.', '.$state;
+    else if(($state != '') && ($country != ''))
+        $address = $state.', '.$country;
+    else if($country != '')
+        $address = $country;
 
-        return $address;
-    }
+    return $address;
+    /* } */
 
 }
 
