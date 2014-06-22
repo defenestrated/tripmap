@@ -12,7 +12,7 @@ License: GPL2
 /*  Copyright 2010 Chris Boyd (email : chris@chrisboyd.net)
 
     This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License, version 2, as 
+    it under the terms of the GNU General Public License, version 2, as
     published by the Free Software Foundation.
 
     This program is distributed in the hope that it will be useful,
@@ -49,14 +49,14 @@ function activate() {
 function geolocation_add_custom_box() {
 		if(function_exists('add_meta_box')) {
 			add_meta_box('geolocation_sectionid', __( 'Geolocation', 'myplugin_textdomain' ), 'geolocation_inner_custom_box', 'post', 'advanced' );
-		} 
+		}
 		else {
 			add_action('dbx_post_advanced', 'geolocation_old_custom_box' );
 		}
 }
 
 function geolocation_inner_custom_box() {
-	echo '<input type="hidden" id="geolocation_nonce" name="geolocation_nonce" value="' . 
+	echo '<input type="hidden" id="geolocation_nonce" name="geolocation_nonce" value="' .
 	wp_create_nonce(plugin_basename(__FILE__) ) . '" />';
 	echo '
 		<label class="screen-reader-text" for="geolocation-address">Geolocation Plus</label>
@@ -83,9 +83,9 @@ function geolocation_inner_custom_box() {
 function geolocation_old_custom_box() {
   echo '<div class="dbx-b-ox-wrapper">' . "\n";
   echo '<fieldset id="geolocation_fieldsetid" class="dbx-box">' . "\n";
-  echo '<div class="dbx-h-andle-wrapper"><h3 class="dbx-handle">' . 
-        __( 'Geolocation', 'geolocation_textdomain' ) . "</h3></div>";   
-   
+  echo '<div class="dbx-h-andle-wrapper"><h3 class="dbx-handle">' .
+        __( 'Geolocation', 'geolocation_textdomain' ) . "</h3></div>";
+
   echo '<div class="dbx-c-ontent-wrapper"><div class="dbx-content">';
 
   geolocation_inner_custom_box();
@@ -97,15 +97,15 @@ function geolocation_save_postdata($post_id) {
   // Check authorization, permissions, autosave, etc
   if (!wp_verify_nonce($_POST['geolocation_nonce'], plugin_basename(__FILE__)))
     return $post_id;
-  
+
   if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE)
     return $post_id;
-  
+
   if('page' == $_POST['post_type'] ) {
     if(!current_user_can('edit_page', $post_id))
 		return $post_id;
   } else {
-    if(!current_user_can('edit_post', $post_id)) 
+    if(!current_user_can('edit_post', $post_id))
 		return $post_id;
   }
 
@@ -114,17 +114,17 @@ function geolocation_save_postdata($post_id) {
   $address = reverse_geocode($latitude, $longitude);
   $public = $_POST['geolocation-public'];
   $on = $_POST['geolocation-on'];
-  
+
   if((clean_coordinate($latitude) != '') && (clean_coordinate($longitude)) != '') {
   	update_post_meta($post_id, 'geo_latitude', $latitude);
   	update_post_meta($post_id, 'geo_longitude', $longitude);
-  	
+
 /*   	if(esc_html($address) != '') */
 		update_post_meta($post_id, 'geo_address', $address);
-  		
+
   	if($on) {
   		update_post_meta($post_id, 'geo_enabled', 1);
-  		
+
 	  	if($public)
 	  		update_post_meta($post_id, 'geo_public', 1);
 	  	else
@@ -135,7 +135,7 @@ function geolocation_save_postdata($post_id) {
   		update_post_meta($post_id, 'geo_public', 1);
   	}
   }
-  
+
   return $post_id;
 }
 
@@ -164,17 +164,17 @@ function admin_head() {
 					var postLongitude =  '<?php echo esc_js(get_post_meta($post_id, 'geo_longitude', true)); ?>';
 					var public = '<?php echo get_post_meta($post_id, 'geo_public', true); ?>';
 					var on = '<?php echo get_post_meta($post_id, 'geo_enabled', true); ?>';
-					
+
 					if(public == '0')
 						$j("#geolocation-public").attr('checked', false);
 					else
 						$j("#geolocation-public").attr('checked', true);
-					
+
 					if(on == '0')
 						disableGeo();
 					else
 						enableGeo();
-					
+
 					if((postLatitude != '') && (postLongitude != '')) {
 						center = new google.maps.LatLng(postLatitude, postLongitude);
 						hasLocation = true;
@@ -182,7 +182,7 @@ function admin_head() {
 						$j("#geolocation-longitude").val(center.lng());
 						reverseGeocode(center);
 					}
-						
+
 				 	var myOptions = {
 				      'zoom': <?php echo $zoom; ?>,
 				      'center': center,
@@ -193,17 +193,17 @@ function admin_head() {
 						new google.maps.Size(39, 23),
 						new google.maps.Point(0, 0),
 						new google.maps.Point(12, 25));
-						
-				    var map = new google.maps.Map(document.getElementById('geolocation-map'), myOptions);	
+
+				    var map = new google.maps.Map(document.getElementById('geolocation-map'), myOptions);
 					var marker = new google.maps.Marker({
-						position: center, 
-						map: map, 
+						position: center,
+						map: map,
 						title:'Post Location'<?php if(get_option('geolocation_wp_pin')) { ?>,
 						icon: image,
 						shadow: shadow
 					<?php } ?>
 					});
-					
+
 					if((!hasLocation) && (google.loader.ClientLocation)) {
 				      center = new google.maps.LatLng(google.loader.ClientLocation.latitude, google.loader.ClientLocation.longitude);
 				      reverseGeocode(center);
@@ -211,11 +211,11 @@ function admin_head() {
 				    else if(!hasLocation) {
 				    	map.setZoom(1);
 				    }
-					
+
 					google.maps.event.addListener(map, 'click', function(event) {
 						placeMarker(event.latLng);
 					});
-					
+
 					var currentAddress;
 					var customAddress = false;
 					$j("#geolocation-address").click(function(){
@@ -223,7 +223,7 @@ function admin_head() {
 						if(currentAddress != '')
 							$j("#geolocation-address").val('');
 					});
-					
+
 					$j("#geolocation-load").click(function(){
 						if($j("#geolocation-address").val() != '') {
 							customAddress = true;
@@ -231,20 +231,20 @@ function admin_head() {
 							geocode(currentAddress);
 						}
 					});
-					
+
 					$j("#geolocation-address").keyup(function(e) {
 						if(e.keyCode == 13)
 							$j("#geolocation-load").click();
 					});
-					
+
 					$j("#geolocation-enabled").click(function(){
 						enableGeo();
 					});
-					
+
 					$j("#geolocation-disabled").click(function(){
 						disableGeo();
 					});
-									
+
 					function placeMarker(location) {
 						marker.setPosition(location);
 						map.setCenter(location);
@@ -252,11 +252,11 @@ function admin_head() {
 							$j("#geolocation-latitude").val(location.lat());
 							$j("#geolocation-longitude").val(location.lng());
 						}
-						
+
 						if(!customAddress)
 							reverseGeocode(location);
 					}
-					
+
 					function geocode(address) {
 						var geocoder = new google.maps.Geocoder();
 					    if (geocoder) {
@@ -272,7 +272,7 @@ function admin_head() {
 						}
 						$j("#geodata").html(latitude + ', ' + longitude);
 					}
-					
+
 					function reverseGeocode(location) {
 						var geocoder = new google.maps.Geocoder();
 					    if (geocoder) {
@@ -291,7 +291,7 @@ function admin_head() {
 							});
 						}
 					}
-					
+
 					function enableGeo() {
 						$j("#geolocation-address").removeAttr('disabled');
 						$j("#geolocation-load").removeAttr('disabled');
@@ -302,11 +302,11 @@ function admin_head() {
 						$j("#geolocation-map").removeAttr('readonly');
 						$j("#geolocation-disabled").removeAttr('checked');
 						$j("#geolocation-enabled").attr('checked', 'checked');
-						
+
 						if(public == '1')
 							$j("#geolocation-public").attr('checked', 'checked');
 					}
-					
+
 					function disableGeo() {
 						$j("#geolocation-address").attr('disabled', 'disabled');
 						$j("#geolocation-load").attr('disabled', 'disabled');
@@ -315,10 +315,10 @@ function admin_head() {
 						$j("#geolocation-map").css('-moz-opacity', '0.5');
 						$j("#geolocation-map").attr('readonly', 'readonly');
 						$j("#geolocation-public").attr('disabled', 'disabled');
-						
+
 						$j("#geolocation-enabled").removeAttr('checked');
 						$j("#geolocation-disabled").attr('checked', 'checked');
-						
+
 						if(public == '1')
 							$j("#geolocation-public").attr('checked', 'checked');
 					}
@@ -375,8 +375,8 @@ function add_google_maps($posts) {
 				new google.maps.Point(0, 0),
 				new google.maps.Point(12, 25));
 		    var marker = new google.maps.Marker({
-					position: center, 
-					map: map, 
+					position: center,
+					map: map,
 					title:"Post Location"';
 				if(get_option('geolocation_wp_pin')) {
 					echo ',
@@ -384,31 +384,31 @@ function add_google_maps($posts) {
 					shadow: shadow';
 				}
 				echo '});
-			
+
 			var allowDisappear = true;
 			var cancelDisappear = false;
-		    
+
 			$j(".geolocation-link").mouseover(function(){
 				$j("#map").stop(true, true);
 				var lat = $j(this).attr("name").split(",")[0];
 				var lng = $j(this).attr("name").split(",")[1];
 				var latlng = new google.maps.LatLng(lat, lng);
 				placeMarker(latlng);
-				
+
 				var offset = $j(this).offset();
 				$j("#map").fadeTo(250, 1);
 				$j("#map").css("z-index", "99");
 				$j("#map").css("visibility", "visible");
 				$j("#map").css("top", offset.top + 20);
 				$j("#map").css("left", offset.left);
-				
+
 				allowDisappear = false;
 				$j("#map").css("visibility", "visible");
 			});
-			
+
 			$j(".geolocation-link").mouseover(function(){
 			});
-			
+
 			$j(".geolocation-link").mouseout(function(){
 				allowDisappear = true;
 				cancelDisappear = false;
@@ -423,25 +423,25 @@ function add_google_maps($posts) {
 					}
 			    },800);
 			});
-			
+
 			$j("#map").mouseover(function(){
 				allowDisappear = false;
 				cancelDisappear = true;
 				$j("#map").css("visibility", "visible");
 			});
-			
+
 			$j("#map").mouseout(function(){
 				allowDisappear = true;
 				cancelDisappear = false;
 				$j(".geolocation-link").mouseout();
 			});
-			
+
 			function placeMarker(location) {
 				map.setZoom('.$zoom.');
 				marker.setPosition(location);
 				map.setCenter(location);
 			}
-			
+
 			google.maps.event.addListener(map, "click", function() {
 				window.location = "http://maps.google.com/maps?q=" + map.center.lat() + ",+" + map.center.lng();
 			});
@@ -511,30 +511,39 @@ function display_location($content)  {
 
 function reverse_geocode($latitude, $longitude) {
 	$url = "http://maps.google.com/maps/api/geocode/json?latlng=".$latitude.",".$longitude."&sensor=false";
-	$result = wp_remote_get($url);
-	$json = json_decode($result['body']);
-	foreach ($json->results as $result)
-	{
-		foreach($result->address_components as $addressPart) {
-			if((in_array('locality', $addressPart->types)) && (in_array('political', $addressPart->types)))
-	    		$city = $addressPart->long_name;
-	    	else if((in_array('administrative_area_level_1', $addressPart->types)) && (in_array('political', $addressPart->types)))
-	    		$state = $addressPart->long_name;
-	    	else if((in_array('country', $addressPart->types)) && (in_array('political', $addressPart->types)))
-	    		$country = $addressPart->long_name;
-		}
-	}
+	$result = wp_remote_get($url, array('timeout' => 200));
+    /* error_log("---------------"); */
+    /* error_log("the result is:"); */
+    $iserr = is_wp_error($result);
+    /* error_log(var_export($result, true)); */
+    /* error_log($iserr); */
 
-	if(($city != '') && ($state != '') && ($country != ''))
-		$address = $city.', '.$state.', '.$country;
-	else if(($city != '') && ($state != ''))
-		$address = $city.', '.$state;
-	else if(($state != '') && ($country != ''))
-		$address = $state.', '.$country;
-	else if($country != '')
-		$address = $country;
+    if ($iserr != 1) {
+            $json = json_decode($result['body']);
+            foreach ($json->results as $result)
+                {
+                    foreach($result->address_components as $addressPart) {
+                        if((in_array('locality', $addressPart->types)) && (in_array('political', $addressPart->types)))
+                            $city = $addressPart->long_name;
+                        else if((in_array('administrative_area_level_1', $addressPart->types)) && (in_array('political', $addressPart->types)))
+                            $state = $addressPart->long_name;
+                        else if((in_array('country', $addressPart->types)) && (in_array('political', $addressPart->types)))
+                            $country = $addressPart->long_name;
+                    }
+                }
 
-	return $address;
+            if(($city != '') && ($state != '') && ($country != ''))
+                $address = $city.', '.$state.', '.$country;
+            else if(($city != '') && ($state != ''))
+                $address = $city.', '.$state;
+            else if(($state != '') && ($country != ''))
+                $address = $state.', '.$country;
+            else if($country != '')
+                $address = $country;
+
+            return $address;
+        }
+
 }
 
 function clean_coordinate($coordinate) {
@@ -566,7 +575,7 @@ function is_checked($field) {
 }
 
 function is_value($field, $value) {
-	if (get_option($field) == $value) 
+	if (get_option($field) == $value)
  		echo ' checked="checked" ';
 }
 
@@ -608,7 +617,7 @@ function geolocation_settings_page() {
 			zoomlevel = document.getElementById(id).value;
 			pin_click();
 		}
-		
+
 		function pin_click() {
 			var div = document.getElementById('zoom_level_sample');
 			file = path + zoomlevel + '.png';
@@ -618,7 +627,7 @@ function geolocation_settings_page() {
 		}
 	</script>
 	<div class="wrap"><h2>Geolocation Plus Plugin Settings</h2></div>
-	
+
 	<form method="post" action="options.php">
     <?php settings_fields( 'geolocation-settings-group' ); ?>
     <table class="form-table">
@@ -632,18 +641,18 @@ function geolocation_settings_page() {
         </tr>
         <tr valign="top">
         	<th scope="row">Position</th>
-        	<td class="position">        	
+        	<td class="position">
 				<input type="radio" id="geolocation_map_position_before" name="geolocation_map_position" value="before"<?php is_value('geolocation_map_position', 'before'); ?>><label for="geolocation_map_position_before">Before the post.</label><br/>
-				
+
 				<input type="radio" id="geolocation_map_position_after" name="geolocation_map_position" value="after"<?php is_value('geolocation_map_position', 'after'); ?>><label for="geolocation_map_position_after">After the post.</label><br/>
 				<input type="radio" id="geolocation_map_position_shortcode" name="geolocation_map_position" value="shortcode"<?php is_value('geolocation_map_position', 'shortcode'); ?>><label for="geolocation_map_position_shortcode">Wherever I put the <strong>[geolocation]</strong> shortcode.</label>
 	        </td>
         </tr>
         <tr valign="top">
 	        <th scope="row">Default Zoom Level</th>
-	        <td class="zoom">        	
+	        <td class="zoom">
 				<input type="radio" id="geolocation_default_zoom_globe" name="geolocation_default_zoom" value="1"<?php is_value('geolocation_default_zoom', '1'); ?> onclick="javascipt:swap_zoom_sample(this.id);"><label for="geolocation_default_zoom_globe">Globe</label>
-				
+
 				<input type="radio" id="geolocation_default_zoom_country" name="geolocation_default_zoom" value="3"<?php is_value('geolocation_default_zoom', '3'); ?> onclick="javascipt:swap_zoom_sample(this.id);"><label for="geolocation_default_zoom_country">Country</label>
 				<input type="radio" id="geolocation_default_zoom_state" name="geolocation_default_zoom" value="6"<?php is_value('geolocation_default_zoom', '6'); ?> onclick="javascipt:swap_zoom_sample(this.id);"><label for="geolocation_default_zoom_state">State</label>
 				<input type="radio" id="geolocation_default_zoom_city" name="geolocation_default_zoom" value="9"<?php is_value('geolocation_default_zoom', '9'); ?> onclick="javascipt:swap_zoom_sample(this.id);"><label for="geolocation_default_zoom_city">City</label>
@@ -655,12 +664,12 @@ function geolocation_settings_page() {
         </tr>
         <tr valign="top">
         	<th scope="row"></th>
-        	<td class="position">        	
+        	<td class="position">
 				<input type="checkbox" id="geolocation_wp_pin" name="geolocation_wp_pin" value="1" <?php is_checked('geolocation_wp_pin'); ?> onclick="javascript:pin_click();"><label for="geolocation_wp_pin">Show your support for WordPress by using the WordPress map pin.</label>
 	        </td>
         </tr>
     </table>
-    
+
     <p class="submit">
     <input type="submit" class="button-primary" value="<?php _e('Save Changes') ?>" />
     </p>
@@ -674,7 +683,7 @@ function geolocation_settings_page() {
 		<img src="<?php echo esc_url(plugins_url('img/zoom/9.png', __FILE__)); ?>"/>
 		<img src="<?php echo esc_url(plugins_url('img/zoom/16.png', __FILE__)); ?>"/>
 		<img src="<?php echo esc_url(plugins_url('img/zoom/18.png', __FILE__)); ?>"/>
-		
+
 		<img src="<?php echo esc_url(plugins_url('img/zoom/wp_1.png', __FILE__)); ?>"/>
 		<img src="<?php echo esc_url(plugins_url('img/zoom/wp_3.png', __FILE__)); ?>"/>
 		<img src="<?php echo esc_url(plugins_url('img/zoom/wp_6.png', __FILE__)); ?>"/>
