@@ -112,6 +112,12 @@ function geolocation_save_postdata($post_id) {
   $latitude = clean_coordinate($_POST['geolocation-latitude']);
   $longitude = clean_coordinate($_POST['geolocation-longitude']);
   $address = reverse_geocode($latitude, $longitude);
+  $formatted_address = $address['fulladdress'];
+  $cty = $address['city'];
+  $st = $address['state'];
+  $st_short = $address['state_short'];
+  $cnt = $address['country'];
+  $cnt_short = $address['country_short'];
   $public = $_POST['geolocation-public'];
   $on = $_POST['geolocation-on'];
 
@@ -120,7 +126,13 @@ function geolocation_save_postdata($post_id) {
   	update_post_meta($post_id, 'geo_longitude', $longitude);
 
 /*   	if(esc_html($address) != '') */
-		update_post_meta($post_id, 'geo_address', $address);
+    update_post_meta($post_id, 'formatted_address', $formatted_address);
+    update_post_meta($post_id, 'city', $cty);
+    update_post_meta($post_id, 'state', $st);
+    update_post_meta($post_id, 'state_short', $st_short);
+    update_post_meta($post_id, 'country', $cnt);
+    update_post_meta($post_id, 'country_short', $cnt_short);
+
 
   	if($on) {
   		update_post_meta($post_id, 'geo_enabled', 1);
@@ -467,15 +479,18 @@ function display_location($content)  {
 	$post_id = $post->ID;
 	$latitude = clean_coordinate(get_post_meta($post->ID, 'geo_latitude', true));
 	$longitude = clean_coordinate(get_post_meta($post->ID, 'geo_longitude', true));
-	$address = get_post_meta($post->ID, 'geo_address', true);
+	$address = get_post_meta($post->ID, 'formatted_address', true);
 	$public = (bool)get_post_meta($post->ID, 'geo_public', true);
 
 	$on = true;
 	if(get_post_meta($post->ID, 'geo_enabled', true) != '')
 		$on = (bool)get_post_meta($post->ID, 'geo_enabled', true);
 
-	if(empty($address))
-		$address = reverse_geocode($latitude, $longitude);
+	if(empty($address)) {
+        $addr = reverse_geocode($latitude, $longitude);
+        $address = $addr['fulladdress'];
+
+    }
 
   if((!empty($latitude)) && (!empty($longitude) && ($public == true) && ($on == true))) {
     if (!empty($address)) {
@@ -519,29 +534,42 @@ function reverse_geocode($latitude, $longitude) {
     /* error_log($iserr); */
 
     if ($iserr != 1) {
+
             $json = json_decode($result['body']);
             foreach ($json->results as $result)
                 {
                     foreach($result->address_components as $addressPart) {
                         if((in_array('locality', $addressPart->types)) && (in_array('political', $addressPart->types)))
                             $city = $addressPart->long_name;
-                        else if((in_array('administrative_area_level_1', $addressPart->types)) && (in_array('political', $addressPart->types)))
+                        else if((in_array('administrative_area_level_1', $addressPart->types)) && (in_array('political', $addressPart->types))) {
                             $state = $addressPart->long_name;
-                        else if((in_array('country', $addressPart->types)) && (in_array('political', $addressPart->types)))
+                            $state_short = $addressPart->short_name;
+                        }
+                        else if((in_array('country', $addressPart->types)) && (in_array('political', $addressPart->types))) {
                             $country = $addressPart->long_name;
+                            $country_short = $addressPart->short_name;
+                        }
+
                     }
                 }
 
             if(($city != '') && ($state != '') && ($country != ''))
-                $address = $city.', '.$state.', '.$country;
+                $fulladdress = $city.', '.$state.', '.$country;
             else if(($city != '') && ($state != ''))
-                $address = $city.', '.$state;
+                $fulladdress = $city.', '.$state;
             else if(($state != '') && ($country != ''))
-                $address = $state.', '.$country;
+                $fulladdress = $state.', '.$country;
             else if($country != '')
-                $address = $country;
+                $fulladdress = $country;
 
-            return $address;
+            return array(
+                'fulladdress' => $address,
+                'city' => $city,
+                'state' => $state,
+                'state_short' => $state_short,
+                'country' => $country,
+                'country_short' => $country_short
+            );
         }
 
 }

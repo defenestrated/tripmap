@@ -362,7 +362,12 @@ class Posts {
     protected static function _get_geo_shit( \WP_Post $post ) {
         $geo_array = array(
             'enabled' => (boolean) get_post_meta( $post->ID, 'geo_enabled', true ),
-            'address' => get_post_meta( $post->ID, 'geo_address', true ),
+            'formatted_address' => get_post_meta( $post->ID, 'geo_address', true ),
+            'city' => get_post_meta( $post->ID, 'city', true),
+            'state' => get_post_meta( $post->ID, 'state', true),
+            'state_short' => get_post_meta( $post->ID, 'state_short', true),
+            'country' => get_post_meta( $post->ID, 'country', true),
+            'country_short' => get_post_meta( $post->ID, 'country_short', true),
             'public' => (boolean) get_post_meta( $post->ID, 'geo_public', true ),
             'latitude' => (float) get_post_meta( $post->ID, 'geo_latitude', true ),
             'longitude' => (float) get_post_meta( $post->ID, 'geo_longitude', true )

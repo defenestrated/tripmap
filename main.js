@@ -1,6 +1,6 @@
 // add any scripting here
 
-var debug = false;
+var debug = true;
 // uncomment this to enable console logging.
 
 var parchment, ww, wh, projection;
@@ -38,6 +38,7 @@ function killload() {
 
 function render() {
     if (debug) console.log("done loading");
+    if (debug) console.log("# of posts: " + postdata.length);
 
     ww = $(window).width(), wh = $(window).height();
 
@@ -182,8 +183,8 @@ function booty(thang, junk) {
                     var post = d3.select(".postnuggets");
                     post.append("h1").html(d.title);
                     post.append("h2").html(function() {
-                        var thedate = moment(d.date).format("MMMM Do, h:mma");
-                        return thedate + " <span class='sep'>//</span> " + d.geodata.address;
+                        var thedate = moment(d.modified).format("MMMM Do, h:mma");
+                        return thedate + " <span class='sep'>//</span> " + d.geodata.city + ", " + d.geodata.state;
                         // return d.geodata.address;
                     });
                     post.append("div")
@@ -207,7 +208,7 @@ function booty(thang, junk) {
                         return projection([d.geodata.longitude, d.geodata.latitude])[1] + "px";
                     })
                     .attr("dy", "0.35em")
-                    .text(function(d) { return d.title; })
+                    .text(function(d) { return d.geodata.city + ', ' + d.geodata.state_short; })
             ;
         });
 
