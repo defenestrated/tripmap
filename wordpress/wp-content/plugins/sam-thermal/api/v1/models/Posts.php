@@ -24,12 +24,8 @@ class Posts {
 			return array();
 		}
 
-		if(isset($args['per_page'])) {
-			$args['posts_per_page'] = $args['per_page'];
-			unset($args['per_page']);
-		}
-
-        $args['post_count'] = 0;
+        $args['posts_per_page'] = -1;
+        $args['post_count'] = -1;
 		$wp_posts = new \WP_Query( $args );
 
 		if ( $wp_posts->have_posts() ) {
