@@ -4,7 +4,7 @@ namespace Voce\Thermal\v1\Models;
 class Posts {
 
 	public function find( $args = array( ), &$found = null ) {
-		
+
 		//add filter for before/after handling, hopefully more complex date querying
 		//will exist by wp3.7
 		if ( isset( $args['before'] ) || isset( $args['after'] ) ) {
@@ -18,16 +18,18 @@ class Posts {
 				$args['post_status'] = array_merge((array) $args['post_status'], array('inherit'));
 			}
 		}
-		
+
 		if( empty( $args['post_status'] ) ) {
 			//a post_status is required
 			return array();
 		}
-		
+
 		if(isset($args['per_page'])) {
 			$args['posts_per_page'] = $args['per_page'];
 			unset($args['per_page']);
 		}
+
+        $args['post_count'] = 0;
 		$wp_posts = new \WP_Query( $args );
 
 		if ( $wp_posts->have_posts() ) {
@@ -35,13 +37,13 @@ class Posts {
 			return $wp_posts->posts;
 		}
 		return array();
-		
+
 	}
-	
+
 	public function findById($id) {
 		return get_post($id);
 	}
-	
+
 	public function _filter_posts_where_handleDateRange( $where, $wp_query ) {
 		if ( ($before = $wp_query->get( 'before' ) ) && $beforets = strtotime( $before ) ) {
 			if ( preg_match( '$:[0-9]{2}\s[+-][0-9]{2}$', $before ) || strpos( $before, 'GMT' ) !== false ) {
@@ -62,5 +64,5 @@ class Posts {
 		remove_filter('posts_search', array($this, __METHOD__));
 		return $where;
 	}
-	
+
 }
