@@ -318,7 +318,7 @@ class Posts {
 				}
 			}
 
-			remove_filter( 'the_content', 'do_shortcode', 11 );
+			/* remove_filter( 'the_content', 'do_shortcode', 11 ); */
 			remove_filter( 'the_content', 'convert_smilies' );
 			remove_filter( 'the_content', 'shortcode_unautop' );
 
@@ -348,6 +348,7 @@ class Posts {
 				'media' => array_values( $media ),
 				'author' => $author,
                 /* 'geodata' => get_post_custom_keys($post->ID), */
+                'display_date' => get_post_meta($post->ID, 'display_date'),
                 'geodata' => $geodata
 				) );
 		}

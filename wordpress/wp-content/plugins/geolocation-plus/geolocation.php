@@ -29,7 +29,7 @@ add_action('wp_head', 'add_geo_support');
 add_action('wp_head', 'geolocation_plus_georss_feed');
 add_action('wp_footer', 'add_geo_div');
 add_action('admin_menu', 'add_settings');
-add_filter('the_content', 'display_location', 5);
+/* add_filter('the_content', 'display_location', 5); */
 admin_init();
 register_activation_hook(__FILE__, 'activate');
 wp_enqueue_script("jquery");
@@ -527,13 +527,9 @@ function display_location($content)  {
 function reverse_geocode($latitude, $longitude) {
 	$url = "http://maps.google.com/maps/api/geocode/json?latlng=".$latitude.",".$longitude."&sensor=false";
 	$result = wp_remote_get($url, array('timeout' => 200));
-    /* error_log("---------------"); */
-    /* error_log("the result is:"); */
     $iserr = is_wp_error($result);
-    /* error_log(var_export($result, true)); */
-    /* error_log($iserr); */
 
-    if ($iserr != 1) {
+    if ($iserr !== true) {
 
             $json = json_decode($result['body']);
             foreach ($json->results as $result)

@@ -1,28 +1,30 @@
 /* add local spec styles here */
 
+/*
+  @font-face {
+  font-family: "ltr-gothic";
+  src: url("assets/fonts/LetterGothicStd.otf");
+  }
+
 @font-face {
-    font-family: "ltr-gothic";
-    src: url("assets/fonts/LetterGothicStd.otf");
+font-family: "ltr-gothic";
+font-style: italic;
+src: url("assets/fonts/LetterGothicStd-Slanted.otf");
 }
 
 @font-face {
-    font-family: "ltr-gothic";
-    font-style: italic;
-    src: url("assets/fonts/LetterGothicStd-Slanted.otf");
+font-family: "ltr-gothic";
+font-weight: bold;
+src: url("assets/fonts/LetterGothicStd-Bold.otf");
 }
 
 @font-face {
-    font-family: "ltr-gothic";
-    font-weight: bold;
-    src: url("assets/fonts/LetterGothicStd-Bold.otf");
+font-family: "ltr-gothic";
+font-weight: bold;
+font-style: italic;
+src: url("assets/fonts/LetterGothicStd-BoldSlanted.otf");
 }
-
-@font-face {
-    font-family: "ltr-gothic";
-    font-weight: bold;
-    font-style: italic;
-    src: url("assets/fonts/LetterGothicStd-BoldSlanted.otf");
-}
+*/
 
 @font-face {
     font-family: "bskr";
@@ -135,11 +137,11 @@ a:active {
     fill: rgba(0,0,127,1);
     stroke: rgba(255,255,255,0.4);
     stroke-width: 1px;
-    /* stroke-dasharray: 2, 4; */
+/* stroke-dasharray: 2, 4; */
 }
 
 .pieceoland:hover {
-    /* fill: white; */
+/* fill: white; */
 }
 
 .dot {
@@ -149,8 +151,8 @@ a:active {
     stroke: white;
     stroke-width: 2px;
 /* fill: rgba(255,255,255,0.8); */
-    /* stroke: rgba(0,0,127,1); */
-    /* stroke-width: 3px; */
+/* stroke: rgba(0,0,127,1); */
+/* stroke-width: 3px; */
 }
 
 .weenie {
@@ -168,10 +170,10 @@ text.label {
     letter-spacing: 0.2em;
     fill: white;
     text-shadow: 0 0 20px rgba(0,0,127,1),
-                 0 0 20px rgba(0,0,127,1),
-                 0 0 20px rgba(0,0,127,1),
-                 0 0 10px rgb(0,0,127),
-                 0 0 5px rgb(0,0,127);
+    0 0 20px rgba(0,0,127,1),
+    0 0 20px rgba(0,0,127,1),
+    0 0 10px rgb(0,0,127),
+    0 0 5px rgb(0,0,127);
     /* -moz-text-shadow: 0 0 20px rgba(0,0,127,1), */
     /*              0 0 20px rgba(0,0,127,1), */
     /*              0 0 20px rgba(0,0,127,1), */
@@ -217,6 +219,10 @@ text.label {
     cursor: pointer;
 }
 
+#closepost:hover {
+    opacity: 0.6;
+}
+
 .postnuggets h1 {
     font-family: "bskr";
     position: relative;
@@ -243,7 +249,7 @@ text.label {
 
 .postnuggets .content {
     padding-top: 30px;
-    max-width: 800px;
+    max-width: 930px;
 }
 
 .postnuggets .content p {
@@ -253,4 +259,23 @@ text.label {
     letter-spacing: 0.05em;
     line-height: 1.4em;
     padding-bottom: 1em;
+}
+
+.postnuggets .wp-caption {
+    float:left;
+    position: relative;
+    width: auto !important;
+}
+
+.postnuggets .wp-caption::after {
+    content: "\00A0";
+}
+
+.postnuggets .content .wp-caption-text {
+    position: absolute;
+    background: rgba(255,255,255,0.6);
+    bottom: 0;
+    width: 100%;
+    padding: 1em 0;
+    text-align: center;
 }

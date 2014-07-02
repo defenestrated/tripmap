@@ -11,10 +11,9 @@ add_action( 'add_meta_boxes', 'extrameta_add_custom_box' );
 add_action( 'save_post', 'extrameta_save_postdata' );
 
 function extrameta_add_custom_box() {
-    $dd_titlefiller = (get_post_meta($post->ID, 'display_date', true)) ? get_post_meta($post->ID, 'display_date', true) : 'not set';
     add_meta_box(
     	'display_date',
-        __( 'actual post date : ' . $dd_titlefiller, 'displaydate_textdomain' ),
+        __( 'actual post date', 'displaydate_textdomain' ),
         'displaydate_box',
         'post'
     );
@@ -61,15 +60,14 @@ function extrameta_save_postdata( $post_id ) {
 	// OK, we're authenticated: we need to find and save the data
 
 
-    $the_displaydate = array($_POST['display_date'], 'display_date');
-    $metas = array($the_displaydate);
+    /* $the_displaydate = array($_POST['display_date'], 'display_date'); */
+    /* $metas = array($the_displaydate); */
 
-    foreach ($the_displaydate as $item) {
-        if ($item[0]) {
-            if ($item[0] === 'REMOVE') delete_post_meta($post_id, $item[1]);
-            else update_post_meta($post_id, $item[1], $item[0]);
-        }
-    }
+    /* foreach ($metas as $item) { */
+    /*     update_post_meta($post_id, $item[1], $item[0]); */
+    /* } */
+
+    update_post_meta($post_id, 'display_date', $_POST['display_date']);
 }
 
 
