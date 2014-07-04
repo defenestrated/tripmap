@@ -262,7 +262,7 @@ text.label {
 }
 
 .postnuggets .wp-caption {
-    float:left;
+    display: inline-block;
     position: relative;
     width: auto !important;
 }
