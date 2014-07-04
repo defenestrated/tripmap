@@ -273,9 +273,11 @@ text.label {
 
 .postnuggets .content .wp-caption-text {
     position: absolute;
-    background: rgba(255,255,255,0.6);
+    background: rgba(255,255,255,0.7);
+    font: normal normal 13px/1.3em "bask";
     bottom: 0;
-    width: 100%;
-    padding: 1em 0;
-    text-align: center;
+    letter-spacing: 0.05em;
+    width: auto;
+    padding: 1em 1em;
+    text-align: left;
 }
