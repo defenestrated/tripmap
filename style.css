@@ -268,7 +268,7 @@ text.label {
 }
 
 .postnuggets .wp-caption::after {
-    content: "\00A0";
+    /* content: "\00A0"; */
 }
 
 .postnuggets .content .wp-caption-text {
